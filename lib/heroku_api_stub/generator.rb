@@ -1,4 +1,4 @@
-module DocStub
+module HerokuAPIStub
   class Generator
     def initialize(doc)
       @doc = doc

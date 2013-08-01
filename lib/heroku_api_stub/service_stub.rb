@@ -1,4 +1,4 @@
-module DocStub
+module HerokuAPIStub
   class ServiceStub < Sinatra::Base
     use Rack::Instruments
 
