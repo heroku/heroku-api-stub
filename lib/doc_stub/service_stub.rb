@@ -5,6 +5,13 @@ module DocStub
     before do
       @body = MultiJson.decode(request.body.read) rescue {}
       @keys = materialize_keys(@body)
+      check_authorized!
+      check_version!
+    end
+
+    private
+
+    def check_authorized!
       if !request.env["HTTP_AUTHORIZATION"] ||
         !(request.env["HTTP_AUTHORIZATION"] =~ /\A(Basic|Bearer)\s+(.*)/)
         halt(401, MultiJson.encode(
@@ -14,7 +21,14 @@ module DocStub
       end
     end
 
-    private
+    def check_version!
+      if request.env["HTTP_ACCEPT"] != "application/vnd.heroku+json; version=3"
+        halt(404, MultiJson.encode(
+          id:      "not_found",
+          message: "Not found."
+        ))
+      end
+    end
 
     def materialize_keys(hash, prefix="")
       keys = []
