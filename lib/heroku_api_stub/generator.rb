@@ -1,7 +1,7 @@
 module HerokuAPIStub
   class Generator
-    def initialize(doc)
-      @doc = doc
+    def initialize(doc=nil)
+      @doc = doc || read_default
     end
 
     def run
@@ -35,6 +35,13 @@ module HerokuAPIStub
         end
       end
       @app
+    end
+
+    private
+
+    def read_default
+      path = File.expand_path("../../../data/doc.json", __FILE__)
+      MultiJson.decode(File.read(path))
     end
   end
 end

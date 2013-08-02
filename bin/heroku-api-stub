@@ -15,8 +15,6 @@ OptionParser.new do |opts|
   opts.on("-p", "--port PORT", "Port to bind to") { |p| options[:port] = p }
 end.parse!
 
-path = File.expand_path("../../data/doc.json", __FILE__)
-doc  = MultiJson.decode(File.read(path))
-app  = HerokuAPIStub::Generator.new(doc).run
+app = HerokuAPIStub::Generator.new.run
 
 app.run! port: options[:port]
