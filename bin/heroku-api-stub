@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 
-require "multi_json"
-require "rack/instruments"
 require "optparse"
-require "sinatra/base"
 
 require_relative "../lib/heroku_api_stub"
 
