@@ -1,5 +1,12 @@
 # Heroku API Stub
 
+Service stub for the Heroku API.
+
+Will respond to all public endpoints of the Heroku API with a sample serialized
+response representing what data that endpoint would normal return. Useful in
+development and testing situations where real API calls might result in
+inconvienent manipulation of real data.
+
 ## Run Standalone
 
 The Heroku API stub can be run from within its own project:
