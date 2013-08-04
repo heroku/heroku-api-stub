@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name        = "heroku_api_stub"
-  gem.version     = "0.1.5"
+  gem.version     = "0.1.6"
 
   gem.author      = "Brandur"
   gem.description = <<-eos
@@ -20,6 +20,5 @@ change of real data.
   gem.files       = ["./data/doc.json"] + Dir["./lib/**/*.rb"]
 
   gem.add_dependency "multi_json",       "> 0.0"
-  gem.add_dependency "rack-instruments", "> 0.0"
   gem.add_dependency "sinatra",          "> 0.0"
 end

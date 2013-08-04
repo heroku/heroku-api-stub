@@ -1,7 +1,5 @@
 module HerokuAPIStub
   class ServiceStub < Sinatra::Base
-    use Rack::Instruments
-
     before do
       @body = MultiJson.decode(request.body.read) rescue {}
       @keys = materialize_keys(@body)
