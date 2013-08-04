@@ -12,8 +12,7 @@ module HerokuAPIStub
           next if !info["serialized"]
           example[name] = info["example"]
         end
-        example = MultiJson.encode(example, pretty: true)
-        resource["actions"].each do |_, action|
+        resource["actions"].each do |name, action|
           method = action["method"]
           path   = action["path"]
           status = action["statuses"][0]
@@ -30,7 +29,11 @@ module HerokuAPIStub
           @app.send(method.downcase, path) do
             require_params!(required_params) if required_params
             validate_params!(optional_params) if optional_params
-            [status, example]
+            if name == "List"
+              [status, MultiJson.encode([example], pretty: true)]
+            else
+              [status, MultiJson.encode(example, pretty: true)]
+            end
           end
         end
       end
