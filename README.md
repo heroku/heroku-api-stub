@@ -7,7 +7,9 @@ response representing what data that endpoint would normal return. Useful in
 development and testing situations where real API calls might result in
 inconvienent manipulation of real data.
 
-## Run Standalone
+## Usage
+
+### Run Standalone
 
 The Heroku API stub can be run from within its own project:
 
@@ -15,7 +17,7 @@ The Heroku API stub can be run from within its own project:
     bundle exec bin/heroku-api-stub
     curl -i -H "Accept: application/vnd.heroku+json; version=3" --user :anything http://localhost:4000/apps/anything
 
-## In Project
+### In Project
 
 It can also be added to another project to help facilitate sane interactions
 during development. Add this to your `Gemfile`:
@@ -34,7 +36,7 @@ Now the stub can be booted from within a `Procfile`:
 heroku_api_stub: bundle exec heroku_api_stub --port $PORT
 ```
 
-## In Tests
+### In Tests
 
 The API mock is fully usable in a testing environment, and bundles testing helpers that use [Webmock](https://github.com/bblimke/webmock). Add something like the following to your `Gemfile`:
 
@@ -83,7 +85,7 @@ against error conditions or other special casing. The following test will fail:
   end
 ```
 
-## Deploy to Platform
+### Deploy to Platform
 
 The stub is also easily deployable against a platform like Heroku. It's also
 possible to just use ours at https://api-stub.heroku.com.
@@ -91,4 +93,12 @@ possible to just use ours at https://api-stub.heroku.com.
 ```
 heroku create
 git push heroku master
+```
+
+## Testing
+
+Run the test suite using Rake:
+
+```
+rake
 ```
