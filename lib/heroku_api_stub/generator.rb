@@ -7,11 +7,7 @@ module HerokuAPIStub
     def run
       @app = Sinatra.new(ServiceStub)
       @doc["resources"].each do |_, resource|
-        example = {}
-        resource["attributes"].each do |name, info|
-          next if !info["serialized"]
-          example[name] = info["example"]
-        end
+        example = build_example(resource)
         resource["actions"].each do |name, action|
           method = action["method"]
           path   = action["path"]
@@ -41,6 +37,32 @@ module HerokuAPIStub
     end
 
     private
+
+    def build_example(resource)
+      example = {}
+      resource["attributes"].each do |name, info|
+        next if !info["serialized"]
+        keys = name.split(":")
+        hash = if (leading_keys = keys[0...-1]).size > 0
+          initialize_subhashes(example, leading_keys)
+        else
+          example
+        end
+        hash[keys.last] = info["example"]
+      end
+      example
+    end
+
+    # returns the last subhash that was initialized
+    def initialize_subhashes(hash, keys)
+      key = keys.shift
+      subhash = hash[key] || (hash[key] = {})
+      if keys.size > 0
+        initialize_subhashes(subhash, keys)
+      else
+        subhash
+      end
+    end
 
     def read_default
       path = File.expand_path("../../../data/doc.json", __FILE__)
