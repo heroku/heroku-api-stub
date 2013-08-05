@@ -7,18 +7,12 @@ module HerokuAPIStub
     def run
       @app = Sinatra.new(ServiceStub)
       @doc["resources"].each do |_, resource|
-        example = build_example(resource)
+        example = build_example(resource["attributes"])
         resource["actions"].each do |name, action|
           method = action["method"]
           path   = action["path"]
           status = action["statuses"][0]
-          required_params =
-            action["attributes"] && action["attributes"]["required"]
-          optional_params =
-            action["attributes"] && action["attributes"]["optional"]
-          if required_params && !optional_params
-            optional_params = required_params
-          end
+          required_params, optional_params = build_param_logic(action)
           # "{app}" to ":app"
           path.gsub!(/{([a-z_]*)}/, ':\1')
           #puts "method=#{method} path=#{path}"
@@ -38,9 +32,9 @@ module HerokuAPIStub
 
     private
 
-    def build_example(resource)
+    def build_example(attributes)
       example = {}
-      resource["attributes"].each do |name, info|
+      attributes.each do |name, info|
         next if !info["serialized"]
         keys = name.split(":")
         hash = if (leading_keys = keys[0...-1]).size > 0
@@ -51,6 +45,17 @@ module HerokuAPIStub
         hash[keys.last] = info["example"]
       end
       example
+    end
+
+    def build_param_logic(action)
+      required_params =
+        action["attributes"] && action["attributes"]["required"]
+      optional_params =
+        action["attributes"] && action["attributes"]["optional"]
+      if required_params && !optional_params
+        optional_params = required_params
+      end
+      [required_params, optional_params]
     end
 
     # returns the last subhash that was initialized
