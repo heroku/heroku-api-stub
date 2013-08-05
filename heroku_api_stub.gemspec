@@ -18,7 +18,10 @@ inconvienent manipulation of real data.
 
   gem.executables = ["heroku-api-stub"]
   gem.files       = ["./data/doc.json"] + Dir["./lib/**/*.rb"]
+  gem.test_files  = ["./spec/**/*.rb"]
 
   gem.add_dependency "multi_json",       "> 0.0"
   gem.add_dependency "sinatra",          "> 0.0"
+
+  gem.add_development_dependency "rack-test"
 end
