@@ -34,7 +34,7 @@ module HerokuAPIStub
         if v.is_a?(Hash)
           keys += materialize_keys(v, "#{prefix}#{k}:")
         else
-          keys << k
+          keys << prefix + k
         end
       end
       keys
