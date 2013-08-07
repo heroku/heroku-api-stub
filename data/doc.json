@@ -25,6 +25,7 @@
       { "Name": "message",  "Type": "string", "Description": "end user message of error raised ",  "Example": "<code>\"Your account reached the API limit. Please wait a few minutes before making new requests\"</code>" }
     ],
     "Error Response": "```\nHTTP/1.1 429 Too Many Requests\n```\n```javascript\n{\n  \"id\":       \"rate_limit\",\n  \"message\":  \"Your account reached the API rate limit\\nPlease wait a few minutes before making new requests\"\n}\n```",
+    "Legacy API":     "Those utilizing the legacy, v2 API should instead consult [legacy-api-docs.heroku.com](https://legacy-api-docs.heroku.com)",
     "Methods": [
       { "Method": "DELETE", "Usage": "used for destroying existing objects" },
       { "Method": "GET",    "Usage": "used for retrieving lists and individual objects" },
@@ -179,6 +180,7 @@
         "Create": {
           "attributes": {
             "optional": [
+              "config",
               "plan:name"
             ]
           },
@@ -199,6 +201,7 @@
         "Update": {
           "attributes": {
             "optional": [
+              "config",
               "plan:name"
             ]
           },
@@ -213,6 +216,12 @@
         }
       },
       "attributes": {
+        "config":     {
+          "description":  "additional add-on service specific configuration",
+          "example":      {},
+          "serialized":   false,
+          "type":         "object"
+        },
         "created_at": {
           "description":  "when add-on was created",
           "example":      "2012-01-01T12:00:00-00:00",
@@ -307,9 +316,7 @@
           "attributes": {
             "optional": [
               "maintenance",
-              "name",
-              "owner:email",
-              "owner:id"
+              "name"
             ]
           },
           "method":     "PATCH",
@@ -323,6 +330,12 @@
         }
       },
       "attributes": {
+        "archived_at": {
+          "description":  "when app was archived",
+          "example":      "2012-01-01T12:00:00-00:00",
+          "serialized":   true,
+          "type":         "datetime"
+        },
         "buildpack_provided_description": {
           "description":  "description from buildpack of app",
           "example":      "Ruby/Rack",
@@ -435,17 +448,17 @@
             ]
           },
           "method":     "POST",
-          "path":       "/app-transfers",
+          "path":       "/account/app-transfers",
           "statuses":   [201]
         },
         "List": {
           "method":     "GET",
-          "path":       "/app-transfers",
+          "path":       "/account/app-transfers",
           "statuses":   [200, 206]
         },
         "Info": {
           "method":     "GET",
-          "path":       "/app-transfers/{transfer_id}",
+          "path":       "/account/app-transfers/{transfer_id}",
           "statuses":   [200]
         },
         "Update": {
@@ -455,12 +468,12 @@
             ]
           },
           "method":     "PATCH",
-          "path":       "/app-transfers/{transfer_id}",
+          "path":       "/account/app-transfers/{transfer_id}",
           "statuses":   [200]
         },
         "Delete": {
           "method":     "DELETE",
-          "path":       "/app-transfers/{transfer_id}",
+          "path":       "/account/app-transfers/{transfer_id}",
           "statuses":   [200]
         }
       },
@@ -1102,10 +1115,10 @@
       },
       "attributes": {
         "access_token:expires_in": {
-          "description":  "date in which this OAuth access token is no longer valid",
-          "example":      "2012-01-01T12:00:00-00:00",
+          "description":  "seconds until OAuth access token expires",
+          "example":      "7200",
           "serialized":   true,
-          "type":         "datetime"
+          "type":         "number"
         },
         "access_token:id": {
           "description":  "unique identifier of this authorization's OAuth access token",
@@ -1174,10 +1187,10 @@
           "type":         "uuid"
         },
         "refresh_token:expires_in": {
-          "description":  "date in which this OAuth refresh token is no longer valid",
-          "example":      "2012-01-01T12:00:00-00:00",
+          "description":  "seconds until OAuth refresh token expires; may be `null` for a refresh token with indefinite lifetime",
+          "example":      "7200",
           "serialized":   true,
-          "type":         "datetime"
+          "type":         "number"
         },
         "refresh_token:id": {
           "description":  "unique identifier of this authorization's OAuth refresh token",
@@ -1193,9 +1206,9 @@
         },
         "scope": {
           "description":  "The scope of access OAuth authorization allows",
-          "example":      "global",
+          "example":      ["global"],
           "serialized":   true,
-          "type":         "string"
+          "type":         "array[string]"
         },
         "updated_at": {
           "description":  "when OAuth authorization was updated",
@@ -1362,7 +1375,7 @@
           "type":         "uuid"
         },
         "refresh_token:expires_in": {
-          "description":  "seconds until OAuth refresh token expires",
+          "description":  "seconds until OAuth refresh token expires; may be `null` for a refresh token with indefinite lifetime",
           "example":      2592000,
           "serialized":   true,
           "type":         "number"
@@ -1518,7 +1531,7 @@
         },
         "Info": {
           "method":     "GET",
-          "path":       "/apps/{app_id_or_name}/releases/{release_id_or_name}",
+          "path":       "/apps/{app_id_or_name}/releases/{release_id_or_version}",
           "statuses":   [200]
         }
       },
@@ -1567,6 +1580,101 @@
         }
       },
       "description": "A release represents a combination of code, config vars and add-ons for an app on Heroku."
+    },
+
+    "SSL Endpoint": {
+      "actions": {
+        "Create": {
+          "attributes": {
+            "required": [
+              "certificate_chain",
+              "private_key"
+            ]
+          },
+          "method":     "POST",
+          "path":       "/apps/{app_id_or_name}/ssl-endpoints",
+          "statuses":   [201]
+        },
+        "List": {
+          "method":     "GET",
+          "path":       "/apps/{app_id_or_name}/ssl-endpoints",
+          "statuses":   [200, 206]
+        },
+        "Info": {
+          "method":     "GET",
+          "path":       "/apps/{app_id_or_name}/ssl-endpoints/{ssl_endpoint_id_or_name}",
+          "statuses":   [200]
+        },
+        "Update": {
+          "attributes": {
+            "optional": [
+              "certificate_chain",
+              "private_key",
+              "rollback"
+            ]
+          },
+          "method":     "PATCH",
+          "path":       "/apps/{app_id_or_name}/ssl-endpoints/{ssl_endpoint_id_or_name}",
+          "statuses":   [200],
+          "description": "Updates an SSL Endpoint with a new certificate and private key or [rolls back an SSL Endpoint](https://devcenter.heroku.com/articles/ssl-endpoint#undo) when the `rollback` parameter is given a value of `true`."
+        },
+        "Delete": {
+          "method":     "DELETE",
+          "path":       "/apps/{app_id_or_name}/ssl-endpoints/{ssl_endpoint_id_or_name}",
+          "statuses":   [200]
+        }
+      },
+      "attributes": {
+        "certificate_chain": {
+          "description":  "raw contents of the public certificate chain (eg: .crt or .pem file)",
+          "example":      "-----BEGIN CERTIFICATE----- ...",
+          "serialized":   true,
+          "type":         "string"
+        },
+        "cname": {
+          "description":  "canonical name record, the address to point a domain at",
+          "example":      "example.herokussl.com",
+          "serialized":   true,
+          "type":         "string"
+        },
+        "created_at": {
+          "description":  "when endpoint was created",
+          "example":      "2012-01-01T12:00:00-00:00",
+          "serialized":   true,
+          "type":         "datetime"
+        },
+        "id": {
+          "description":  "unique identifier of this SSL endpoint",
+          "example":      "01234567-89ab-cdef-0123-456789abcdef",
+          "serialized":   true,
+          "type":         "uuid"
+        },
+        "name": {
+          "description":  "unique name for SSL endpoint",
+          "example":      "tokyo-1234",
+          "serialized":   true,
+          "type":         "string"
+        },
+        "private_key": {
+          "description":  "contents of the private key (eg .key file)",
+          "example":      "-----BEGIN RSA PRIVATE KEY----- ...",
+          "serialized":   false,
+          "type":         "string"
+        },
+        "rollback": {
+          "description":  "indicates that a rollback should be performed",
+          "example":      true,
+          "serialized":   false,
+          "type":         "boolean"
+        },
+        "updated_at": {
+          "description":  "when endpoint was updated",
+          "example":      "2012-01-01T12:00:00-00:00",
+          "serialized":   true,
+          "type":         "datetime"
+        }
+      },
+      "description": "[SSL Endpoints](https://devcenter.heroku.com/articles/ssl-endpoint) are public addresses serving custom SSL certs for HTTPS traffic to Heroku apps. Note that an app must have the `ssl:endpoint` addon installed before it can provision an SSL Endpoint using these APIs."
     }
 
   }

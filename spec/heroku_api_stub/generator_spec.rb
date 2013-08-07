@@ -30,6 +30,7 @@ describe HerokuAPIStub::Generator do
 
   def serialized_app
     {
+      "archived_at" => "2012-01-01T12:00:00-00:00",
       "buildpack_provided_description" => "Ruby/Rack",
       "created_at" => "2012-01-01T12:00:00-00:00",
       "git_url" => "git@heroku.com/example.git",

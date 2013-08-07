@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name        = "heroku_api_stub"
-  gem.version     = "0.1.7"
+  gem.version     = "0.1.8"
 
   gem.author      = "Brandur"
   gem.description = <<-eos
