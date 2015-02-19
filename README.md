@@ -33,7 +33,7 @@ end
 Now the stub can be booted from within a `Procfile`:
 
 ```
-heroku_api_stub: bundle exec heroku_api_stub --port $PORT
+heroku_api_stub: bundle exec heroku-api-stub --port $PORT
 ```
 
 ### In Tests
